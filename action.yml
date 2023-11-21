@@ -1,0 +1,42 @@
+name: Sync Cargo lockfile and Rust toolchain
+description: Whenever the lockfile and/or the toolchain file of the host repository go out of sync with Zenoh's, this action will open a pull request to update them.
+inputs:
+  source:
+    description: "Source repository of Zenoh as '{owner}/{repo}'"
+    required: true
+    default: eclipse-zenoh/zenoh
+  branch:
+    description: "Branch of Zenoh to checkout"
+    required: true
+    default: master
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout this repository
+      uses: actions/checkout@v4
+    - name: Override rust-toolchain.toml with Zenoh's
+      # This should be done before we install the toolchain
+      run: curl "https://raw.githubusercontent.com/${{ inputs.source }}/${{ inputs.branch }}/rust-toolchain.toml" --output rust-toolchain.toml
+      shell: bash
+    - name: Install Rust toolchain
+      # Showing the active Rust toolchain (defined by the rust-toolchain.toml file)
+      # will have the side effect of installing it; if it's not installed already.
+      run: rustup show
+      shell: bash
+    - name: Override Cargo.lock with Zenoh's
+      run: curl "https://raw.githubusercontent.com/${{ inputs.source }}/${{ inputs.branch }}/Cargo.lock" --output Cargo.lock
+      shell: bash
+    - name: Fixup Cargo.lock
+      # Checking the package for errors will rectify the Cargo.lock while preserving
+      # the dependency versions fetched from source.
+      run: cargo check
+      shell: bash
+    - name: Create/Update a pull request if Cargo.lock or rust-toolchain.toml changed
+      # If there is a pending PR, this action will simply update it with a forced push
+      uses: peter-evans/create-pull-request@v5
+      with:
+        commit-message: "automated: Sync `Cargo.lock` and/or `rust-toolchain.toml` with Zenoh's"
+        branch: automated/sync-lockfile-and-toolchain
+        delete-branch: true
+        title: Sync `Cargo.lock` and/or `rust-toolchain.toml` with Zenoh's
+        body: Automated synchronization of Cargo.lock and/or rust-toolchain.toml with Zenoh. This is necessary to ensure plugin ABI compatibility.
