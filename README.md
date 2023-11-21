@@ -1,4 +1,4 @@
-# An Action for syncing a Zenoh plugin's lockfile and toolchain
+# Sync Zenoh plugin lockfile and toolchain
 
 To ensure ABI compatibility between Zenoh and runtime-loaded plugins, one needs
 to build both with exactly the same dependency versions as specified in the
