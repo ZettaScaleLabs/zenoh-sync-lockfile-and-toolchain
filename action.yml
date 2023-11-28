@@ -23,6 +23,14 @@ inputs:
     description: "Branch of Zenoh to checkout"
     required: true
     default: master
+  manifest-path:
+    description: "Path to the manifest whose lockfile is to be synced"
+    required: true
+    default: "Cargo.toml"
+  toolchain-path:
+    description: "Path to the Rust toolchain to sync"
+    required: true
+    default: "rust-toolchain.toml"
 runs:
   using: "composite"
   steps:
@@ -30,7 +38,7 @@ runs:
       uses: actions/checkout@v4
     - name: Override rust-toolchain.toml with Zenoh's
       # This should be done before we install the toolchain
-      run: curl "https://raw.githubusercontent.com/${{ inputs.source }}/${{ inputs.branch }}/rust-toolchain.toml" --output rust-toolchain.toml
+      run: curl "https://raw.githubusercontent.com/${{ inputs.source }}/${{ inputs.branch }}/rust-toolchain.toml" --output ${{ inputs.toolchain-path }}
       shell: bash
     - name: Install Rust toolchain
       # Showing the active Rust toolchain (defined by the rust-toolchain.toml file)
@@ -43,7 +51,7 @@ runs:
     - name: Fixup Cargo.lock
       # Checking the package for errors will rectify the Cargo.lock while preserving
       # the dependency versions fetched from source.
-      run: cargo check
+      run: cargo check --manifest-path ${{ inputs.manifest-path }}
       shell: bash
     - name: Create/Update a pull request if Cargo.lock or rust-toolchain.toml changed
       # If there is a pending PR, this action will simply update it with a forced push
