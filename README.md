@@ -9,6 +9,15 @@ from the Zenoh repository defined in the `source` input at the branch defined in
 the `branch` input. If any changes are to be made, a pull request will be
 opened. If such a pull request already exists, it will be overridden with a forced push.
 
+## Inputs
+
+| Input            | Description                                        | Default               |
+| ---------------- | -------------------------------------------------- | --------------------- |
+| `source`         | Source repository of Zenoh as '{owner}/{repo}'     | `eclipse-zenoh/zenoh` |
+| `branch`         | Branch of Zenoh to checkout                        | `master`              |
+| `manifest-path`  | Path to the manifest whose lockfile will be synced | `Cargo.toml`          |
+| `toolchain-path` | Path to the Rust toolchain to sync                 | `rust-toolchain.toml` |
+
 ## Usage
 
 This Action accepts two inputs: `source` (which defaults to
