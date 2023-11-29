@@ -46,7 +46,9 @@ runs:
       run: rustup show
       shell: bash
     - name: Override Cargo.lock with Zenoh's
-      run: curl "https://raw.githubusercontent.com/${{ inputs.source }}/${{ inputs.branch }}/Cargo.lock" --output Cargo.lock
+      run: |
+        MANIFEST_PATH=${{ inputs.manifest-path }}
+        curl "https://raw.githubusercontent.com/${{ inputs.source }}/${{ inputs.branch }}/Cargo.lock" --output ${MANIFEST_PATH/toml/lock}
       shell: bash
     - name: Fixup Cargo.lock
       # Checking the package for errors will rectify the Cargo.lock while preserving
