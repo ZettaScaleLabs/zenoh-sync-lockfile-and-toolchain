@@ -20,8 +20,7 @@ opened. If such a pull request already exists, it will be overridden with a forc
 
 ## Usage
 
-This Action accepts two inputs: `source` (which defaults to
-`eclipse-zenoh/zenoh`) and `branch` (which defaults to `master`).
+This workflow example uses default inputs and is triggered both manually and nightly.
 
 ```yml
 name: sync-lockfile-and-toolchain
@@ -29,6 +28,7 @@ run-name: Sync lockfile and toolchain with Zenoh's
 on:
   schedule: 
     - cron: "0 0 * * *" # At the end of every day
+  workflow_dispatch:
 jobs:
   sync-lockfile-and-toolchain:
     runs-on: ubuntu-latest
