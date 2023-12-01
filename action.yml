@@ -31,6 +31,9 @@ inputs:
     description: "Path to the Rust toolchain to sync"
     required: true
     default: "rust-toolchain.toml"
+  token:
+    description: 'Personal Access Token used for creating the pull request'
+    required: true
 runs:
   using: "composite"
   steps:
@@ -56,6 +59,7 @@ runs:
       run: cargo check --manifest-path ${{ inputs.manifest-path }}
       shell: bash
     - name: Create/Update a pull request if Cargo.lock or rust-toolchain.toml changed
+      id: cpr
       # If there is a pending PR, this action will simply update it with a forced push
       uses: peter-evans/create-pull-request@v5
       with:
@@ -64,3 +68,10 @@ runs:
         delete-branch: true
         title: Sync `Cargo.lock` and/or `rust-toolchain.toml` with Zenoh's
         body: Automated synchronization of Cargo.lock and/or rust-toolchain.toml with Zenoh. This is necessary to ensure plugin ABI compatibility.
+        token: ${{ inputs.token }}
+    - name: Enable auto merge for the pull request
+      if: steps.cpr.outputs.pull-request-operation == 'created'
+      run: gh pr merge --merge --auto "${{ steps.cpr.outputs.pull-request-number }}"
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
