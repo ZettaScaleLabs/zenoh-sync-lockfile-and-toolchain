@@ -34,6 +34,10 @@ inputs:
   token:
     description: 'Personal Access Token used for creating the pull request'
     required: true
+  auto-approve:
+    description: 'Whether to automatically approve the created pull request'
+    required: true
+    default: true
 runs:
   using: "composite"
   steps:
@@ -69,6 +73,11 @@ runs:
         title: Sync `Cargo.lock` and/or `rust-toolchain.toml` with Zenoh's
         body: Automated synchronization of Cargo.lock and/or rust-toolchain.toml with Zenoh. This is necessary to ensure plugin ABI compatibility.
         token: ${{ inputs.token }}
+    - name: Auto approve the pull request
+      if: steps.cpr.outputs.pull-request-operation == 'created' && inputs.auto-approve
+      run: gh pr review --approve "${{ steps.cpr.outputs.pull-request-number }}"
+      env:
+        GH_TOKEN: ${{ inputs.token }}
     - name: Enable auto merge for the pull request
       if: steps.cpr.outputs.pull-request-operation == 'created'
       run: gh pr merge --merge --auto "${{ steps.cpr.outputs.pull-request-number }}"
