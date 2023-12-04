@@ -78,7 +78,7 @@ runs:
       run: gh pr review --approve "${{ steps.cpr.outputs.pull-request-number }}"
       shell: bash
       env:
-        GH_TOKEN: ${{ inputs.token }}
+        GH_TOKEN: ${{ github.token }}
     - name: Enable auto merge for the pull request
       if: steps.cpr.outputs.pull-request-operation == 'created'
       run: gh pr merge --merge --auto "${{ steps.cpr.outputs.pull-request-number }}"
