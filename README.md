@@ -11,12 +11,14 @@ opened. If such a pull request already exists, it will be overridden with a forc
 
 ## Inputs
 
-| Input            | Description                                        | Default               |
-| ---------------- | -------------------------------------------------- | --------------------- |
-| `source`         | Source repository of Zenoh as '{owner}/{repo}'     | `eclipse-zenoh/zenoh` |
-| `branch`         | Branch of Zenoh to checkout                        | `master`              |
-| `manifest-path`  | Path to the manifest whose lockfile will be synced | `Cargo.toml`          |
-| `toolchain-path` | Path to the Rust toolchain to sync                 | `rust-toolchain.toml` |
+| Input            | Description                                               | Default               |
+| ---------------- | --------------------------------------------------------- | --------------------- |
+| `source`         | Source repository of Zenoh as '{owner}/{repo}'            | `eclipse-zenoh/zenoh` |
+| `branch`         | Branch of Zenoh to checkout                               | `master`              |
+| `manifest-path`  | Path to the manifest whose lockfile will be synced        | `Cargo.toml`          |
+| `toolchain-path` | Path to the Rust toolchain to sync                        | `rust-toolchain.toml` |
+| `token`          | Personal Access Token used to creating the pull request   | N/A                   |
+| `auto-approve`   | Whether to automatically approve the created pull request | `true`                |
 
 ## Usage
 
