@@ -76,6 +76,7 @@ runs:
     - name: Auto approve the pull request
       if: steps.cpr.outputs.pull-request-operation == 'created' && inputs.auto-approve
       run: gh pr review --approve "${{ steps.cpr.outputs.pull-request-number }}"
+      shell: bash
       env:
         GH_TOKEN: ${{ inputs.token }}
     - name: Enable auto merge for the pull request
